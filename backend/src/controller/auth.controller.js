@@ -1,19 +1,22 @@
 const userModel = require("../models/user.model")
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken");
 
 async function registerUser(req,res){
+try{
     const {fullname,email,password} = req.body;
 
-    const userExistAlready = await userModel.findOne();
-    if(userExistAlready){
+    if(!fullname || !password || !email){
         return res.status(400).send({
-            msg : "User Already Exists !!"
+            msg : "Fill in Creds"
         })
     }
 
-    if((!fullname) || (!password) || (!email)){
+    const userExistAlready = await userModel.findOne({ email });
+
+    if(userExistAlready){
         return res.status(400).send({
-            msg : "Fill in Creds"
+            msg : "User Already Exists !!"
         })
     }
 
@@ -24,14 +27,31 @@ async function registerUser(req,res){
         email : email,
         password : hashedPassword,
     })
+
+    const token = jwt.sign(
+        { id : user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    )
+
+    res.cookie("token", token)
+
     res.status(201).send({
         msg : "registered successfullt",
-        user : fullname,
-        email : email,
+        user : {
+            _id : user._id,
+            fullname : user.fullname,
+            email : user.email,
+        },
+        
     })
+}catch(err){
+    console.error("ERROR : ", err);
+}
 }
 
 module.exports={
     registerUser
 }
+
 

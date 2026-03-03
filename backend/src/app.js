@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
-const userModel = require("./models/user.model")
+const cookieParser = require("cookie-parser")
+const authRoutes = require("./routes/auth.route")
+
 
 app.use(express.json());
+app.use(cookieParser())
 
-app.post("/api", async (req,res)=>{
-})
+
+app.use("/api/auth", authRoutes);
 
 module.exports = app;
