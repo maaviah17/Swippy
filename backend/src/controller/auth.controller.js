@@ -50,8 +50,51 @@ try{
 }
 }
 
+async function loginUser(req,res){
+
+    try{
+
+        const {email,password} = req.body;
+
+        const user = await userModel.findOne({ email })
+        if(!user){
+            return res.status(400).json({
+                msg : "Invalid Creds"
+            })
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+        if(!isPasswordValid){
+            return res.status(400).json({
+                msg : "Invalid Creds ;( "
+            })
+        }
+
+        const token = jwt.sign(
+            { _id : user._id },
+            process.env.JWT_SECRET
+        )
+
+        res.cookie("token", token);
+
+        res.status(200).json({
+            msg : "User Logged in successfully",
+            user : {
+                _id : user._id,
+                fullname : user.fullname,
+                email : user.email,
+            },
+        })
+
+    }catch(err){
+        console.error("ERROR : ")
+    }
+
+}
+
 module.exports={
-    registerUser
+    registerUser,
+    loginUser
 }
 
 
