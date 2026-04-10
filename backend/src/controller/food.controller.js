@@ -1,13 +1,37 @@
 const foodModel = require("../models/food.model");
+const { uploadVideo } = require("../services/storage.service")
+const { v4: uuid } = require("uuid")
 
 async function createFood(req,res){
 
-    console.log(req.foodPartner);
-    con
-    res.status(201).json({
-        msg : "HI there"
-    })
+    try{
+        console.log("BELOW")
+        // console.log(req.foodPartner);
 
+        console.log("req.file → ", req.file);        // add this
+        console.log("req.body → ", req.body); 
+
+        if (!req.file) {
+            return res.status(400).json({
+            error: "File is required",
+        });
+}
+        const fileUploadResult = await uploadVideo(
+            req.file.buffer,
+            uuid()
+        )
+
+        console.log("upload result → ", fileUploadResult);
+
+        res.status(201).json({
+            url : fileUploadResult.url,
+            fileId : fileUploadResult.fileId,
+        })
+    }catch(error){
+        res.status(500).json({
+            error : error.message
+        })
+    }
 }
 
 module.exports = {
