@@ -9,6 +9,6 @@ app.use(cookieParser())
 
 
 app.use("/api/auth", authRoutes);
-app.use("api/food", foodRoutes);
+app.use("/api/food", foodRoutes);
 
 module.exports = app;

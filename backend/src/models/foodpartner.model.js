@@ -14,6 +14,11 @@ const foodPartnerSchema = new mongoose.Schema({
     password : {
         type : String,
         required : true
+    },
+    itemList : {
+        type : String,
+        required : true,
+        
     }
 })
 
