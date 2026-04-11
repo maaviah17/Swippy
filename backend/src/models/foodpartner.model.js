@@ -15,11 +15,11 @@ const foodPartnerSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    itemList : {
-        type : String,
-        required : true,
+    // itemList : {
+    //     type : String,
+    //     required : true,
         
-    }
+    // }
 })
 
 const foodPartnerModel = mongoose.model("foodpartner", foodPartnerSchema);

@@ -2,8 +2,8 @@ const foodModel = require("../models/food.model");
 const { uploadVideo } = require("../services/storage.service")
 const { v4: uuid } = require("uuid")
 
-async function createFood(req,res){
 
+async function createFood(req,res){
     try{
         console.log("BELOW")
         // console.log(req.foodPartner);
@@ -23,9 +23,16 @@ async function createFood(req,res){
 
         console.log("upload result → ", fileUploadResult);
 
+        const foodUploaded = await foodModel.create({
+            name : req.body.name,
+            video : fileUploadResult.url,
+            description : req.body.description,
+            foodPartner : req.foodPartner._id
+        })
+
         res.status(201).json({
-            url : fileUploadResult.url,
-            fileId : fileUploadResult.fileId,
+            msg : "Food Created Successfully",
+            food : foodUploaded
         })
     }catch(error){
         res.status(500).json({
